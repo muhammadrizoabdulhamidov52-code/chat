@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #000; color: #e7e9ea; }
+        .top-bar {
+            position: sticky; top: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            padding: 14px 20px; display: flex; align-items: center; gap: 20px;
+            border-bottom: 1px solid #2f3336; z-index: 10;
+        }
+        .back { color: #e7e9ea; text-decoration: none; font-size: 20px; }
+        .top-bar h2 { font-size: 18px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #333; }
+        .post-header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+        .name { font-weight: 700; font-size: 16px; }
+        .username { color: #71767b; font-size: 14px; }
+        .post-content { font-size: 22px; line-height: 1.4; margin-bottom: 16px; word-wrap: break-word; }
+        .meta { color: #71767b; font-size: 14px; padding-bottom: 16px; border-bottom: 1px solid #2f3336; margin-bottom: 16px; }
+        .stats { display: flex; gap: 24px; padding-bottom: 16px; border-bottom: 1px solid #2f3336; margin-bottom: 16px; }
+        .stat-num { font-weight: 700; color: #e7e9ea; }
+        .stat-label { color: #71767b; font-size: 13px; }
+        .action-row { display: flex; gap: 32px; }
+        .action { display: flex; align-items: center; gap: 8px; cursor: pointer; background: none; border: none; color: #71767b; font-size: 14px; font-family: 'Poppins', sans-serif; }
+        .action.liked { color: #f91880; }
+        .action svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .action.liked svg { fill: #f91880; stroke: #f91880; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a class="back" href="/">&larr;</a>
+        <h2>Post</h2>
+    </div>
+
+    <div class="container">
+        <div class="post-header">
+            <img class="avatar"
+                 th:src="${post.author.photoUrl != null and !post.author.photoUrl.isEmpty()} ? ${post.author.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${post.author.username}">
+            <div>
+                <div class="name" th:text="${post.author.fullName}">Ism</div>
+                <div class="username" th:text="'@' + ${post.author.username}">@user</div>
+            </div>
+        </div>
+
+        <div class="post-content" th:text="${post.content}">Post matni</div>
+        <div class="meta" th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Vaqt</div>
+
+        <div class="stats">
+            <div><span class="stat-num" th:text="${likeCount}">0</span> <span class="stat-label">like</span></div>
+            <div><span class="stat-num" th:text="${post.viewCount}">0</span> <span class="stat-label">ko'rishlar</span></div>
+        </div>
+
+        <div class="action-row">
+            <form th:action="@{/posts/{id}/like(id=${post.id})}" method="post">
+                <button type="submit" class="action" th:classappend="${likedByMe} ? 'liked' : ''">
+                    <svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6 9 4.6c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"/></svg>
+                    <span th:text="${likedByMe} ? 'Like bosilgan' : 'Like'">Like</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
