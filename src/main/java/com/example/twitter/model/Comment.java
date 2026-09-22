@@ -1,4 +1,5 @@
 package com.example.twitter.model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,64 +9,63 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    private Post post;
+
+    @ManyToOne
     private AppUser author;
 
-    private String content;
-    private String imageUrl;
-    private String videoUrl;
-    private LocalDateTime createdAt;
-    private Integer viewCount = 0;
+    @ManyToOne
+    private Comment parent;
 
-    public Post() {
+    private String content;
+    private LocalDateTime createdAt;
+
+    public Comment() {
     }
 
-    public Post(AppUser author, String content, String imageUrl, String videoUrl) {
+    public Comment(Post post, AppUser author, String content) {
+        this.post = post;
         this.author = author;
         this.content = content;
-        this.imageUrl = imageUrl;
-        this.videoUrl = videoUrl;
         this.createdAt = LocalDateTime.now();
-        this.viewCount = 0;
+    }
+
+    public Comment(Post post, AppUser author, String content, Comment parent) {
+        this.post = post;
+        this.author = author;
+        this.content = content;
+        this.parent = parent;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
     }
 
+    public Post getPost() {
+        return post;
+    }
+
     public AppUser getAuthor() {
         return author;
+    }
+
+    public Comment getParent() {
+        return parent;
     }
 
     public String getContent() {
         return content;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-    public Integer getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-
 }

@@ -38,7 +38,7 @@ public class PostRestController {
     public ResponseEntity<Post> createPost(@RequestBody Map<String, String> body, Authentication authentication) {
         AppUser currentUser = userService.getByUsername(authentication.getName());
         String content = body.get("content");
-        Post post = postService.createPost(currentUser, content);
+        Post post = postService.createPost(currentUser, content, null, null);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 

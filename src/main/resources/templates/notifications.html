@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bildirishnomalar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="icon" href="/logo.png">
+    <style>
+        .top-header {
+            position: sticky; top: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            padding: 16px 20px; border-bottom: 1px solid #2f3336; font-weight: 700; font-size: 20px; z-index: 5;
+        }
+        .notif-row {
+            display: flex; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #2f3336;
+            text-decoration: none; color: inherit;
+        }
+        .notif-row:hover { background: #080808; }
+        .notif-icon {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+        }
+        .notif-icon.like { background: rgba(236,72,153,0.15); color: var(--accent2); }
+        .notif-icon.comment, .notif-icon.reply { background: rgba(168,85,247,0.15); color: var(--accent); }
+        .notif-icon svg { width: 18px; height: 18px; fill: currentColor; }
+        .notif-body { flex: 1; }
+        .notif-text { font-size: 14px; line-height: 1.4; }
+        .notif-text b { font-weight: 700; }
+        .notif-preview { color: #71767b; font-size: 13px; margin-top: 4px; }
+        .notif-time { color: #71767b; font-size: 12px; margin-top: 4px; }
+        .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #333; }
+        .empty { text-align: center; color: #71767b; padding: 60px 20px; }
+    </style>
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(${currentUser})}"></div>
+
+    <div class="main-content">
+        <div class="top-header">Bildirishnomalar</div>
+
+        <div th:if="${#lists.isEmpty(notifications)}" class="empty">Hali bildirishnomalar yo'q</div>
+
+        <a th:each="n : ${notifications}" th:href="@{/posts/{id}(id=${n.post.id})}" class="notif-row">
+            <img class="avatar-sm"
+                 th:src="${n.actor.photoUrl != null and !n.actor.photoUrl.isEmpty()} ? ${n.actor.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${n.actor.username}">
+            <div class="notif-body">
+                <div class="notif-text">
+                    <b th:text="${n.actor.fullName}">Ism</b>
+                    <span th:if="${n.type == 'LIKE'}"> postingizni like bosdi</span>
+                    <span th:if="${n.type == 'COMMENT'}"> postingizga izoh qoldirdi</span>
+                    <span th:if="${n.type == 'REPLY'}"> izohingizga javob yozdi</span>
+                    <span th:if="${n.type == 'COMMENT_LIKE'}"> izohingizni like bosdi</span>
+                </div>
+                <div class="notif-preview" th:if="${n.comment != null}" th:text="${n.comment.content}">Izoh matni</div>
+                <div class="notif-time" th:text="${#temporals.format(n.createdAt, 'dd-MM-yyyy HH:mm')}">Vaqt</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="right-panel"></div>
+</div>
+</body>
+</html>

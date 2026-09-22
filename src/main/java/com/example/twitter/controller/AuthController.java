@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController {
 
+
     private final UserService userService;
 
     @Autowired
@@ -30,9 +31,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestParam String username,
-                            @RequestParam String password,
-                            @RequestParam String fullName,
-                            Model model) {
+                           @RequestParam String password,
+                           @RequestParam String fullName,
+                           Model model) {
         if (userService.usernameExists(username)) {
             model.addAttribute("error", "Bu username band, boshqasini tanlang");
             return "register";

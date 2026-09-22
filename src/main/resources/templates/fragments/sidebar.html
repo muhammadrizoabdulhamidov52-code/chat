@@ -1,0 +1,52 @@
+<div th:fragment="sidebar(currentUser)" class="sidebar">
+    <div class="sidebar-logo">Twiinst</div>
+    <nav class="sidebar-nav">
+        <a class="nav-item" href="/">
+            <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z"/></svg>
+            <span>Bosh sahifa</span>
+        </a>
+        <a class="nav-item" th:href="@{/profile/{u}(u=${currentUser.username})}">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            <span>Profil</span>
+        </a>
+        <a class="nav-item" href="/notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span>Bildirishnomalar</span>
+            <span th:if="${unreadNotifications != null and unreadNotifications > 0}" class="nav-badge" th:text="${unreadNotifications}">1</span>
+        </a>
+        <a class="nav-item" href="/messages">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Xabarlar</span>
+        </a>
+        <a class="nav-item" href="/bookmarks">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>Saqlanganlar</span>
+        </a>
+    </nav>
+    <a href="/" class="compose-nav-btn">Post</a>
+    <div class="sidebar-user">
+        <img class="avatar-sm"
+             th:src="${currentUser.photoUrl != null and !currentUser.photoUrl.isEmpty()} ? ${currentUser.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${currentUser.username}">
+        <div class="sidebar-user-info">
+            <div class="sidebar-user-name" th:text="${currentUser.fullName}">Ism</div>
+            <div class="sidebar-user-username" th:text="'@' + ${currentUser.username}">@user</div>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn" title="Chiqish">&#8635;</button>
+        </form>
+    </div>
+</div>
+    </nav>
+    <a href="/" class="compose-nav-btn">Post</a>
+    <div class="sidebar-user">
+        <img class="avatar-sm"
+             th:src="${currentUser.photoUrl != null and !currentUser.photoUrl.isEmpty()} ? ${currentUser.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${currentUser.username}">
+        <div class="sidebar-user-info">
+            <div class="sidebar-user-name" th:text="${currentUser.fullName}">Ism</div>
+            <div class="sidebar-user-username" th:text="'@' + ${currentUser.username}">@user</div>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout-btn" title="Chiqish">&#8635;</button>
+        </form>
+    </div>
+</div>

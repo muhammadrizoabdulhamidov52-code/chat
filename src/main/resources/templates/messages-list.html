@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xabarlar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="icon" href="/logo.png">
+    <style>
+        .top-header {
+            position: sticky; top: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            padding: 16px 20px; border-bottom: 1px solid #2f3336; font-weight: 700; font-size: 20px; z-index: 5;
+        }
+        .conv-row {
+            display: flex; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #2f3336;
+            text-decoration: none; color: inherit; align-items: center;
+        }
+        .conv-row:hover { background: #080808; }
+        .avatar-sm { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: #333; }
+        .conv-name { font-weight: 700; font-size: 15px; }
+        .conv-username { color: #71767b; font-size: 13px; }
+        .empty { text-align: center; color: #71767b; padding: 60px 20px; }
+    </style>
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(${currentUser})}"></div>
+
+    <div class="main-content">
+        <div class="top-header">Xabarlar</div>
+
+        <div th:if="${#lists.isEmpty(partners)}" class="empty">Hali yozishmalar yo'q. Biror foydalanuvchining profiliga kirib, "Xabar yuborish" tugmasini bosing.</div>
+
+        <a th:each="partner : ${partners}" th:href="@{/messages/{u}(u=${partner.username})}" class="conv-row">
+            <img class="avatar-sm"
+                 th:src="${partner.photoUrl != null and !partner.photoUrl.isEmpty()} ? ${partner.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${partner.username}">
+            <div>
+                <div class="conv-name" th:text="${partner.fullName}">Ism</div>
+                <div class="conv-username" th:text="'@' + ${partner.username}">@user</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="right-panel"></div>
+</div>
+</body>
+</html>

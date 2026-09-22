@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saqlanganlar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <style>
+        .top-header {
+            position: sticky; top: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            padding: 16px 20px; border-bottom: 1px solid #2f3336; font-weight: 700; font-size: 20px; z-index: 5;
+        }
+        .post-card { padding: 16px 20px; border-bottom: 1px solid #2f3336; display: flex; gap: 12px; }
+        .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #333; }
+        .post-body { flex: 1; min-width: 0; }
+        .post-header { display: flex; gap: 6px; align-items: baseline; margin-bottom: 2px; }
+        .post-header .name { font-weight: 700; font-size: 15px; color: #e7e9ea; text-decoration: none; }
+        .post-header .username { color: #71767b; font-size: 14px; }
+        .post-header .time { color: #71767b; font-size: 14px; }
+        .post-content { font-size: 15px; line-height: 1.4; margin-bottom: 10px; word-wrap: break-word; }
+        .post-image { width: 100%; height: 400px; object-fit: cover; border-radius: 16px; margin-bottom: 10px; display: block; }
+        .post-actions { display: flex; gap: 32px; color: #71767b; font-size: 13px; }
+        .action { display: flex; align-items: center; gap: 6px; cursor: pointer; background: none; border: none; color: #71767b; font-size: 13px; font-family: 'Poppins', sans-serif; }
+        .action.liked { color: var(--accent2); }
+        .action.saved { color: var(--accent); }
+        .action svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .action.liked svg { fill: var(--accent2); stroke: var(--accent2); }
+        .action.saved svg { fill: var(--accent); stroke: var(--accent); }
+        .empty { text-align: center; color: #71767b; padding: 60px 20px; }
+    </style>
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar(${currentUser})}"></div>
+
+    <div class="main-content">
+        <div class="top-header">Saqlanganlar</div>
+
+        <div th:if="${#lists.isEmpty(bookmarks)}" class="empty">Hali saqlangan post yo'q</div>
+
+        <div class="post-card" th:each="b : ${bookmarks}">
+            <a th:href="@{/profile/{u}(u=${b.post.author.username})}">
+                <img class="avatar-sm"
+                     th:src="${b.post.author.photoUrl != null and !b.post.author.photoUrl.isEmpty()} ? ${b.post.author.photoUrl} : 'https://api.dicebear.com/7.x/initials/svg?seed=' + ${b.post.author.username}">
+            </a>
+            <div class="post-body">
+                <div class="post-header">
+                    <a class="name" th:href="@{/profile/{u}(u=${b.post.author.username})}" th:text="${b.post.author.fullName}">Ism</a>
+                    <span class="username" th:text="'@' + ${b.post.author.username}">@user</span>
+                    <span class="time">&middot;</span>
+                    <span class="time" th:text="${#temporals.format(b.post.createdAt, 'dd-MM HH:mm')}">vaqt</span>
+                </div>
+                <a th:href="@{/posts/{id}(id=${b.post.id})}" style="text-decoration:none;color:inherit;">
+                    <div class="post-content" th:text="${b.post.content}">Post matni</div>
+                    <img th:if="${b.post.imageUrl != null and !b.post.imageUrl.isEmpty()}" class="post-image" th:src="${b.post.imageUrl}">
+                </a>
+                <div class="post-actions">
+                    <form th:action="@{/posts/{id}/like(id=${b.post.id})}" method="post">
+                        <button type="submit" class="action" th:classappend="${likedByMe.get(b.post.id)} ? 'liked' : ''">
+                            <svg viewBox="0 0 24 24"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6 9 4.6c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"/></svg>
+                            <span th:text="${likeCounts.get(b.post.id)}">0</span>
+                        </button>
+                    </form>
+                    <form th:action="@{/posts/{id}/bookmark(id=${b.post.id})}" method="post">
+                        <input type="hidden" name="redirectTo" value="bookmarks">
+                        <button type="submit" class="action saved">
+                            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"/></svg>
+                            <span>Saqlangan</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel"></div>
+</div>
+</body>
+</html>
